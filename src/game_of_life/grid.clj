@@ -1,38 +1,73 @@
 (ns game-of-life.grid
-  (:require [game-of-life.cell :refer :all]))
-
-(defn make-row-of-dead-cells [number-of-cols row]
-  (letfn [(helper[row n accum]
-            (if (= n number-of-cols)
-              (into [] accum)
-              (helper row (+ n 1) (conj accum (->Cell false row n) ))))]
-    (helper row 0 [])))
-
-(defn make-dead-grid [number-of-rows number-of-cols]
-  (let [row_numbers (range number-of-rows)]
-    (into [] (map (partial make-row-of-dead-cells number-of-cols) row_numbers))))
-
-(defn get-cell [grid row col]
-  (get-in grid [row col]))
-
-(defn change-cell-in-grid [grid row col f]
-  (let [target-cell (get-cell grid row col)
-        updated-cell (f target-cell)]
-    (assoc-in grid [row col] updated-cell)))
-
-(defn cell-neighbors [grid r c]
-  (let [target-cell (get-cell grid r c)]
-    ))
-
-(defn alive-neighbor-count [grid r c]
   )
 
-;(defn debugit []
-;  (let [test-grid (make-dead-grid 5 5)
-;        test-cell (get-cell test-grid 2 4)
-;        row-test (:row test-cell)
-;        col-test (:col test-cell)]
-;    nil
-;     ))
+(defn make-dead-grid [number-of-rows number-of-cols]
+  (into [] (repeat number-of-rows (into [] (repeat number-of-cols 0)))))
+
+(defn get-cell [grid [row col]]
+  (get-in grid [row col]))
+
+(defn number-of-rows [grid]
+  (count grid))
+
+(defn number-of-cols [grid]
+  (count (grid 0)))
+
+(defn flip [x]
+  (if (zero? x) 1 0))
+
+(defn flip-cell [grid [row col]]
+  (update-in grid [row col] flip))
+
+(defn flip-cells [grid cells] ;takes in a grid and vector containing a vector for each cell coords
+  (reduce flip-cell grid cells))
+
+(defn alive-neighbor-count [grid [row col]]
+  )
+
+(defn add-coords [coord1 coord2]
+  (into [] (map + coord1 coord2)))
+
+(defn add-cords-on-infinite-grid [grid coord1 coord2]
+  (let [n_rows (number-of-rows grid)
+        n_cols (number-of-cols grid)
+        [x1 y1] coord1
+        [x2 y2] coord2
+        intermediate-x (+ x1 x2)
+        intermediate-y (+ y1 y2)
+        new-x (if (> intermediate-x 0)
+                (rem intermediate-x n_rows)
+                (+ n_rows intermediate-x)
+                )
+        new-y (if (> intermediate-y 0)
+                (rem intermediate-y n_cols)
+                (+ n_cols intermediate-y)
+                )
+        ]
+    [new-x new-y]
+    ))
+
+(def traditional-neighbor-coordinates
+  [   ;clockwise
+      ; 0, 0   0, 1   0, 2
+      ; 1, 0   1, 1   1, 2
+      ; 2, 0   2, 1   2, 2
+   [-1, 0], ;top
+   [-1, 1], ;top right
+   [ 0, 1], ;right
+   [ 1, 1], ;bottom right
+   [ 1, 0], ;bottom
+   [ 1,-1], ;bottom left
+   [ 0,-1], ;left
+   [-1,-1]  ;top left
+
+   ])
+
+(defn find-neighbor-coords-old [[r c]]
+  (map (partial add-coords [r c]) traditional-neighbor-coordinates))
+
+(defn find-neighbor-coords-new [grid [r c]]
+  (map (partial add-cords-on-infinite-grid grid [r c]) traditional-neighbor-coordinates))
+;(defn debugit [])
 ;
 ;(debugit)
