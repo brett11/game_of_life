@@ -47,6 +47,16 @@
       ]
      )
 
+(def blinker-grid-5x5 ;cols 2 and 4 are alive (true)
+  [
+   [ 0 0 0 0 0]
+   [ 0 0 1 0 0]
+   [ 0 0 1 0 0]
+   [ 0 0 1 0 0]
+   [ 0 0 0 0 0]
+   ]
+  )
+
 (def example-grid-7x7 ;cols 2 and 4 are alive (true)
   [
    [ 0 0 0 0 0 0 0]
@@ -128,4 +138,63 @@
   (testing "#alive-neighbor-count"
     (is (= 6 (alive-neighbor-count example-grid-5x5 [2 2])))))
 
-(alive-neighbor-count example-grid-5x5 [2 2])
+(deftest flip-test
+  (is (= false (flip? blinker-grid-5x5 [0 0])))
+  (is (= false (flip? blinker-grid-5x5 [0 1])))
+  (is (= false (flip? blinker-grid-5x5 [0 2])))
+  (is (= false (flip? blinker-grid-5x5 [0 3])))
+  (is (= false (flip? blinker-grid-5x5 [0 4])))
+  (is (= false (flip? blinker-grid-5x5 [1 0])))
+  (is (= false (flip? blinker-grid-5x5 [1 1])))
+  (is (= true  (flip? blinker-grid-5x5 [1 2])))
+  (is (= false (flip? blinker-grid-5x5 [1 3])))
+  (is (= false (flip? blinker-grid-5x5 [1 4])))
+  (is (= false (flip? blinker-grid-5x5 [2 0])))
+  (is (= true  (flip? blinker-grid-5x5 [2 1])))
+  (is (= false (flip? blinker-grid-5x5 [2 2])))
+  (is (= true  (flip? blinker-grid-5x5 [2 3])))
+  (is (= false (flip? blinker-grid-5x5 [2 4])))
+  (is (= false (flip? blinker-grid-5x5 [3 0])))
+  (is (= false (flip? blinker-grid-5x5 [3 1])))
+  (is (= true  (flip? blinker-grid-5x5 [3 2])))
+  (is (= false (flip? blinker-grid-5x5 [3 3])))
+  (is (= false (flip? blinker-grid-5x5 [3 4])))
+  (is (= false (flip? blinker-grid-5x5 [4 0])))
+  (is (= false (flip? blinker-grid-5x5 [4 1])))
+  (is (= false (flip? blinker-grid-5x5 [4 2])))
+  (is (= false (flip? blinker-grid-5x5 [4 3])))
+  (is (= false (flip? blinker-grid-5x5 [4 4]))))
+
+(deftest generate-coord-vectors-test
+  (is (= [
+          [0,0] [0,1] [0,2]
+          [1,0] [1,1] [1,2]
+          [2,0] [2,1] [2, 2]
+          ] (generate-coord-vectors example-grid-3x3))))
+
+(deftest find-coords-need-to-be-flipped-test
+  (is (= [ [1 2]
+           [2 1]
+           [2 3]
+           [3 2]
+          ] (find-coords-need-to-be-flipped blinker-grid-5x5))))
+
+(deftest one-generation
+  (is (=
+          [
+           [ 0 0 0 0 0]
+           [ 0 0 0 0 0]
+           [ 0 1 1 1 0]
+           [ 0 0 0 0 0]
+           [ 0 0 0 0 0]
+           ] (generation blinker-grid-5x5))))
+
+(deftest two-generations
+  (is (=
+        [
+         [ 0 0 0 0 0]
+         [ 0 0 1 0 0]
+         [ 0 0 1 0 0]
+         [ 0 0 1 0 0]
+         [ 0 0 0 0 0]
+         ] (generation (generation blinker-grid-5x5)))))

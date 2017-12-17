@@ -74,3 +74,36 @@
       (filter #(= % 1))
       (count))))
 
+(defn alive? [cell_value]
+  (= 1 cell_value))
+
+(defn flip? [grid [r c]]
+  (let [alive-neighbor-count (alive-neighbor-count grid [r c])
+        cell (get-cell grid [r c])]
+    (if (alive? cell)
+      (cond
+        (< 2 alive-neighbor-count) true ;live cell with fewer than two neighbors dies (gets flipped)
+        (or (= 2 alive-neighbor-count) (= 3 alive-neighbor-count)) false ;live cell with 2 or 3 neighbors continues living
+        (> 3 alive-neighbor-count) true ;overpopulation
+        )
+      (if (= 3 alive-neighbor-count)
+        true ;dead cell with 3 neighbors becomes alive
+        false ;otherwise dead cell stays dead )
+        ))))
+
+(defn generate-coord-vectors [grid]
+  (let [row-range (range (number-of-rows grid))
+        col-range (range (number-of-cols grid))]
+    (into [] (for [row-index row-range col-index col-range] [row-index col-index]))))
+
+(defn find-coords-need-to-be-flipped [grid]
+  (->>
+    (generate-coord-vectors grid)
+    (filter (partial flip? grid))
+    (into [])))
+
+(defn generation [grid]
+  (->>
+    grid
+    (find-coords-need-to-be-flipped)
+    (flip-cells grid)))
