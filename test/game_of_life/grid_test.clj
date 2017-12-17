@@ -94,21 +94,6 @@
   (testing "#add_coords"
     (is (= [3 9] (add-coords [1 3] [2 6])))))
 
-(deftest find_neighbors-old-test
-  (testing "#find_neighbors"
-    (let [expected_result [
-                           [4,5],
-                           [4,6],
-                           [5,6],
-                           [6,6],
-                           [6,5],
-                           [6,4],
-                           [5,4],
-                           [4,4],
-
-                           ]]
-      (is (= expected_result (find-neighbor-coords-old [5 5]))))))
-
 (deftest find_neighbors-new-test
   (testing "#find_neighbors"
     (let [expected_result [
@@ -122,4 +107,25 @@
                            [4,4],
 
                            ]]
-      (is (= expected_result (find-neighbor-coords-new example-grid-7x7 [5 5]))))))
+      (is (= expected_result (find-neighbor-coords example-grid-7x7 [5 5]))))))
+
+(deftest find_neighbors-new-test-2
+  (testing "#find_neighbors"
+    (let [expected_result [
+                           [2,0],
+                           [2,1],
+                           [0,1],
+                           [1,1],
+                           [1,0],
+                           [1,2],
+                           [0,2],
+                           [2,2],
+
+                           ]]
+      (is (= expected_result (find-neighbor-coords example-grid-3x3 [0 0]))))))
+
+(deftest alive-neighbor-count-test
+  (testing "#alive-neighbor-count"
+    (is (= 6 (alive-neighbor-count example-grid-5x5 [2 2])))))
+
+(alive-neighbor-count example-grid-5x5 [2 2])

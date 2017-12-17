@@ -22,24 +22,25 @@
 (defn flip-cells [grid cells] ;takes in a grid and vector containing a vector for each cell coords
   (reduce flip-cell grid cells))
 
-(defn alive-neighbor-count [grid [row col]]
-  )
-
 (defn add-coords [coord1 coord2]
   (into [] (map + coord1 coord2)))
 
 (defn add-cords-on-infinite-grid [grid coord1 coord2]
+  ; figured out formula using this example of a 3x3 grid. 0,0 as target cell
+  ;   2, 2   2, 0   2,1
+  ;   0, 2   0, 0   0,1
+  ;   1, 2   1, 0   1, 1
   (let [n_rows (number-of-rows grid)
         n_cols (number-of-cols grid)
         [x1 y1] coord1
         [x2 y2] coord2
         intermediate-x (+ x1 x2)
         intermediate-y (+ y1 y2)
-        new-x (if (> intermediate-x 0)
+        new-x (if (>= intermediate-x 0)
                 (rem intermediate-x n_rows)
                 (+ n_rows intermediate-x)
                 )
-        new-y (if (> intermediate-y 0)
+        new-y (if (>= intermediate-y 0)
                 (rem intermediate-y n_cols)
                 (+ n_cols intermediate-y)
                 )
@@ -60,14 +61,16 @@
    [ 1,-1], ;bottom left
    [ 0,-1], ;left
    [-1,-1]  ;top left
-
    ])
 
-(defn find-neighbor-coords-old [[r c]]
-  (map (partial add-coords [r c]) traditional-neighbor-coordinates))
-
-(defn find-neighbor-coords-new [grid [r c]]
+(defn find-neighbor-coords [grid [r c]]
   (map (partial add-cords-on-infinite-grid grid [r c]) traditional-neighbor-coordinates))
-;(defn debugit [])
-;
-;(debugit)
+
+(defn alive-neighbor-count [grid [row col]]
+  (let [neighbor-coords (find-neighbor-coords grid [row col])]
+    (->>
+      neighbor-coords
+      (map (partial get-cell grid))
+      (filter #(= % 1))
+      (count))))
+
