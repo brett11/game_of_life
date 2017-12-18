@@ -57,6 +57,40 @@
    ]
   )
 
+
+(def glider-grid-1-6x6
+  [
+   [ 0 0 0 0 0 0 ]
+   [ 0 0 0 1 0 0 ]
+   [ 0 1 0 1 0 0 ]
+   [ 0 0 1 1 0 0 ]
+   [ 0 0 0 0 0 0 ]
+   [ 0 0 0 0 0 0 ]
+   ]
+  )
+
+(def glider-grid-2-6x6
+  [
+   [ 0 0 0 0 0 0 ]
+   [ 0 0 1 0 0 0 ]
+   [ 0 0 0 1 1 0 ]
+   [ 0 0 1 1 0 0 ]
+   [ 0 0 0 0 0 0 ]
+   [ 0 0 0 0 0 0 ]
+   ]
+  )
+
+(def glider-grid-3-6x6
+  [
+   [ 0 0 0 0 0 0 ]
+   [ 0 0 0 1 0 0 ]
+   [ 0 0 0 0 1 0 ]
+   [ 0 0 1 1 1 0 ]
+   [ 0 0 0 0 0 0 ]
+   [ 0 0 0 0 0 0 ]
+   ]
+  )
+
 (def example-grid-7x7 ;cols 2 and 4 are alive (true)
   [
    [ 0 0 0 0 0 0 0]
@@ -100,43 +134,31 @@
 ;(deftest alive-neighbor-count-test
 ;  (is (= 6 (alive-neighbor-count example-grid-5x5 2 2))))
 
-(deftest add-coords-test
-  (testing "#add_coords"
-    (is (= [3 9] (add-coords [1 3] [2 6])))))
-
 (deftest find_neighbors-new-test
   (testing "#find_neighbors"
     (let [expected_result [
-                           [4,5],
-                           [4,6],
-                           [5,6],
-                           [6,6],
-                           [6,5],
-                           [6,4],
-                           [5,4],
-                           [4,4],
-
+                     [4,4] [4,5] [4,6]
+                     [5,4]       [5,6]
+                     [6,4] [6,5] [6,6]
                            ]]
       (is (= expected_result (find-neighbor-coords example-grid-7x7 [5 5]))))))
 
 (deftest find_neighbors-new-test-2
   (testing "#find_neighbors"
     (let [expected_result [
-                           [2,0],
-                           [2,1],
-                           [0,1],
-                           [1,1],
-                           [1,0],
-                           [1,2],
-                           [0,2],
-                           [2,2],
-
+                            [2,2] [2,0] [2,1]
+                            [0,2]       [0,1]
+                            [1,2] [1,0] [1,1]
                            ]]
       (is (= expected_result (find-neighbor-coords example-grid-3x3 [0 0]))))))
 
 (deftest alive-neighbor-count-test
   (testing "#alive-neighbor-count"
     (is (= 6 (alive-neighbor-count example-grid-5x5 [2 2])))))
+
+(deftest alive-neighbor-count-test
+  (testing "#alive-neighbor-count"
+    (is (= 3 (alive-neighbor-count glider-grid-1-6x6 [3 2])))))
 
 (deftest flip-test
   (is (= false (flip? blinker-grid-5x5 [0 0])))
@@ -179,7 +201,7 @@
            [3 2]
           ] (find-coords-need-to-be-flipped blinker-grid-5x5))))
 
-(deftest one-generation
+(deftest one-generation-blinker-test
   (is (=
           [
            [ 0 0 0 0 0]
@@ -189,7 +211,7 @@
            [ 0 0 0 0 0]
            ] (generation blinker-grid-5x5))))
 
-(deftest two-generations
+(deftest two-generations-blinker-test
   (is (=
         [
          [ 0 0 0 0 0]
@@ -198,3 +220,11 @@
          [ 0 0 1 0 0]
          [ 0 0 0 0 0]
          ] (generation (generation blinker-grid-5x5)))))
+
+(deftest one-generation-glider-test
+  (is (= glider-grid-2-6x6 (generation glider-grid-1-6x6))))
+
+(generation glider-grid-1-6x6)
+
+(deftest two-generations-glider-test
+  (is (= glider-grid-3-6x6 (generation (generation glider-grid-1-6x6)))))

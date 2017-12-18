@@ -1,5 +1,4 @@
-(ns game-of-life.grid
-  )
+(ns game-of-life.grid)
 
 (defn make-dead-grid [number-of-rows number-of-cols]
   (into [] (repeat number-of-rows (into [] (repeat number-of-cols 0)))))
@@ -21,9 +20,6 @@
 
 (defn flip-cells [grid cells] ;takes in a grid and vector containing a vector for each cell coords
   (reduce flip-cell grid cells))
-
-(defn add-coords [coord1 coord2]
-  (into [] (map + coord1 coord2)))
 
 (defn add-cords-on-infinite-grid [grid coord1 coord2]
   ; figured out formula using this example of a 3x3 grid. 0,0 as target cell
@@ -53,14 +49,9 @@
       ; 0, 0   0, 1   0, 2
       ; 1, 0   1, 1   1, 2
       ; 2, 0   2, 1   2, 2
-   [-1, 0], ;top
-   [-1, 1], ;top right
-   [ 0, 1], ;right
-   [ 1, 1], ;bottom right
-   [ 1, 0], ;bottom
-   [ 1,-1], ;bottom left
-   [ 0,-1], ;left
-   [-1,-1]  ;top left
+   [-1,-1] [-1, 0] [-1, 1]
+   [ 0,-1]         [ 0, 1]
+   [ 1,-1] [ 1, 0] [ 1, 1]
    ])
 
 (defn find-neighbor-coords [grid [r c]]
@@ -82,9 +73,9 @@
         cell (get-cell grid [r c])]
     (if (alive? cell)
       (cond
-        (< 2 alive-neighbor-count) true ;live cell with fewer than two neighbors dies (gets flipped)
+        (< alive-neighbor-count 2) true ;live cell with fewer than two neighbors dies (gets flipped)
         (or (= 2 alive-neighbor-count) (= 3 alive-neighbor-count)) false ;live cell with 2 or 3 neighbors continues living
-        (> 3 alive-neighbor-count) true ;overpopulation
+        (> alive-neighbor-count 3) true ;overpopulation
         )
       (if (= 3 alive-neighbor-count)
         true ;dead cell with 3 neighbors becomes alive
