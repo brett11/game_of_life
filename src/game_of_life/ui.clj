@@ -1,6 +1,6 @@
 (ns game-of-life.ui
   (:require [game-of-life.grid :refer :all])
-  (:import (javax.swing SwingUtilities JFrame JPanel BorderFactory)
+  (:import (javax.swing SwingUtilities JFrame JPanel BorderFactory Timer)
            (java.awt Color Dimension Graphics)
            (java.awt.event ActionListener)))
 
@@ -30,39 +30,46 @@
       (doall (map draw-box-if-alive all-coordinates))
       )))
 
-(def glider-grid-1-6x6
+(def glider-grid-1-10x10
   [
-   [ 0 0 0 0 0 0 ]
-   [ 0 0 0 1 0 0 ]
-   [ 0 1 0 1 0 0 ]
-   [ 0 0 1 1 0 0 ]
-   [ 0 0 0 0 0 0 ]
-   [ 0 0 0 0 0 0 ]
+   [ 0 0 0 0 0 0 0 0 0 0 ]
+   [ 0 0 0 1 0 0 0 0 0 0]
+   [ 0 1 0 1 0 0 0 0 0 0]
+   [ 0 0 1 1 0 0 0 0 0 0]
+   [ 0 0 0 0 0 0 0 0 0 0]
+   [ 0 0 0 0 0 0 0 0 0 0]
+   [ 0 0 0 0 0 0 0 0 0 0]
+   [ 0 0 0 0 0 0 0 0 0 0]
+   [ 0 0 0 0 0 0 0 0 0 0]
+   [ 0 0 0 0 0 0 0 0 0 0]
    ]
   )
 
-(defn gol-panel [pixels]
-  (let [panel
-        (proxy [JPanel ActionListener] []
-          (paintComponent [g]
-            (draw-grid (generation (generation glider-grid-1-6x6)) pixels g))
+(defn gol-panel [pixels grid]
+  (let [current-grid (atom grid)
+        panel (proxy [JPanel ActionListener] []
+                (paintComponent [g]
+                  (draw-grid @current-grid pixels g))
 
-          (actionPerformed [e]
-            (.repaint this))
+                (actionPerformed [e]
+                  (swap! current-grid generation)
+                  (.repaint this))
 
-          (getPreferredSize []
-            (Dimension. pixels pixels)))]
-      panel
-      ))
+                (getPreferredSize []
+                  (Dimension. pixels pixels)))]
+    panel
+    ))
 
 (defn create-and-show-gui []
-  (doto (JFrame. "Game of Life")
+  (let [panel (gol-panel 300 glider-grid-1-10x10)
+        timer (Timer. 100 panel)]
+    (doto (JFrame. "Game of Life")
     (.setDefaultCloseOperation (JFrame/EXIT_ON_CLOSE))
-    (.setContentPane (gol-panel 300))
+    (.setContentPane panel)
     (.setBackground Color/WHITE)
     .pack
-    .show
-    ))
+    .show)
+    (.start timer)))
 
 
 (defn -main []
