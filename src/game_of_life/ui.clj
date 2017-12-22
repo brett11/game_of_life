@@ -1,14 +1,9 @@
 (ns game-of-life.ui
-  (:require [game-of-life.grid :refer :all])
+  (:require [game-of-life.core :refer :all]
+            [game-of-life.examples :refer :all])
   (:import (javax.swing SwingUtilities JFrame JPanel BorderFactory Timer)
            (java.awt Color Dimension Graphics)
            (java.awt.event ActionListener)))
-
-
-
-;(defn draw-boxes [grid rows cols g]
-;  (let [all_coordinates (for [r (range 0 7) c (range 0 6)] [r c])]
-;    (map )))
 
 (defn draw-grid [grid size-of-desired-grid-in-pixels g]
   (let [number-of-rows (number-of-rows grid)
@@ -30,20 +25,6 @@
       (doall (map draw-box-if-alive all-coordinates))
       )))
 
-(def glider-grid-1-10x10
-  [
-   [ 0 0 0 0 0 0 0 0 0 0 ]
-   [ 0 0 0 1 0 0 0 0 0 0]
-   [ 0 1 0 1 0 0 0 0 0 0]
-   [ 0 0 1 1 0 0 0 0 0 0]
-   [ 0 0 0 0 0 0 0 0 0 0]
-   [ 0 0 0 0 0 0 0 0 0 0]
-   [ 0 0 0 0 0 0 0 0 0 0]
-   [ 0 0 0 0 0 0 0 0 0 0]
-   [ 0 0 0 0 0 0 0 0 0 0]
-   [ 0 0 0 0 0 0 0 0 0 0]
-   ]
-  )
 
 (defn gol-panel [pixels grid]
   (let [current-grid (atom grid)
@@ -64,11 +45,11 @@
   (let [panel (gol-panel 300 glider-grid-1-10x10)
         timer (Timer. 100 panel)]
     (doto (JFrame. "Game of Life")
-    (.setDefaultCloseOperation (JFrame/EXIT_ON_CLOSE))
-    (.setContentPane panel)
-    (.setBackground Color/WHITE)
-    .pack
-    .show)
+      (.setDefaultCloseOperation (JFrame/EXIT_ON_CLOSE))
+      (.setContentPane panel)
+      (.setBackground Color/WHITE)
+      .pack
+      .show)
     (.start timer)))
 
 
