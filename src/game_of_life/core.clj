@@ -34,12 +34,12 @@
         intermediate-x (+ x1 x2)
         intermediate-y (+ y1 y2)
         new-x (if (>= intermediate-x 0)
-                (rem intermediate-x n_rows)
-                (+ n_rows intermediate-x)
+                (rem intermediate-x n_cols)
+                (+ n_cols intermediate-x)
                 )
         new-y (if (>= intermediate-y 0)
-                (rem intermediate-y n_cols)
-                (+ n_cols intermediate-y)
+                (rem intermediate-y n_rows)
+                (+ n_rows intermediate-y)
                 )
         ]
     [new-x new-y]
@@ -58,16 +58,16 @@
 (defn find-neighbor-coords [grid [r c]]
   (map (partial add-cords-on-infinite-grid grid [r c]) traditional-neighbor-coordinates))
 
+(defn alive? [cell_value]
+  (= 1 cell_value))
+
 (defn alive-neighbor-count [grid [row col]]
   (let [neighbor-coords (find-neighbor-coords grid [row col])]
     (->>
       neighbor-coords
       (map (partial get-cell grid))
-      (filter #(= % 1))
+      (filter alive?)
       (count))))
-
-(defn alive? [cell_value]
-  (= 1 cell_value))
 
 (defn flip? [grid [r c]]
   (let [alive-neighbor-count (alive-neighbor-count grid [r c])
