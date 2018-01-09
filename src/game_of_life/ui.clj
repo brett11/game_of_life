@@ -13,7 +13,7 @@
         all-coordinates (for [r (range 0 number-of-rows) c (range 0 number-of-cols)] [r c])
         draw-box-if-alive (fn[[r c]]
                    (if (alive? (get-cell grid [r c]))
-                     (.fillRect g (* c col-size) (* r row-size) row-size col-size)
+                     (.fillRect g (* c col-size) (* r row-size) col-size row-size)
                    ))
         ]
     (do
