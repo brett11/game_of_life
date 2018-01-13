@@ -3,6 +3,9 @@
             [game-of-life.examples :refer :all]
             [game-of-life.core :refer :all]))
 
+; test helper function
+(defn make-dead-grid [number-of-rows number-of-cols]
+  (into [] (repeat number-of-rows (into [] (repeat number-of-cols 0)))))
 
 (deftest make-dead-grid-test
   (testing "grid is vector of vectors (rows)"
